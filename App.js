@@ -16,28 +16,109 @@ import {
   nectarTheme,
 } from './src/data/nectarData';
 import AccountScreen from './src/screens/AccountScreen';
+import BeveragesScreen from './src/screens/BeveragesScreen';
 import CartScreen from './src/screens/CartScreen';
+import ExploreScreen from './src/screens/ExploreScreen';
 import FavouriteScreen from './src/screens/FavouriteScreen';
+import FilterScreen from './src/screens/FilterScreen';
+import HomeScreen from './src/screens/HomeScreen';
 import OrderAcceptedScreen from './src/screens/OrderAcceptedScreen';
-import PlaceholderScreen from './src/screens/PlaceholderScreen';
+import ProductDetailScreen from './src/screens/ProductDetailScreen';
+import SearchScreen from './src/screens/SearchScreen';
 import { isWebPreview, scale } from './src/utils/layout';
 
+function createHomeRoute() {
+  return { name: 'Home' };
+}
+
+function createExploreRoute() {
+  return { name: 'Explore' };
+}
+
+function createEmptyFilters() {
+  return {
+    categories: [],
+    brands: [],
+  };
+}
+
+function cloneFilters(filters) {
+  return {
+    categories: Array.isArray(filters?.categories) ? [...filters.categories] : [],
+    brands: Array.isArray(filters?.brands) ? [...filters.brands] : [],
+  };
+}
+
+function buildPreset(overrides = {}) {
+  return {
+    tab: 'shop',
+    overlay: null,
+    shopStack: [createHomeRoute()],
+    exploreStack: [createExploreRoute()],
+    searchQuery: 'egg',
+    selectedFilters: createEmptyFilters(),
+    ...overrides,
+  };
+}
+
 const SCREEN_PRESETS = {
-  checkout: { tab: 'cart', overlay: 'checkout' },
-  'order-accepted': { tab: 'cart', overlay: 'orderAccepted' },
-  error: { tab: 'favourite', overlay: 'error' },
-  account: { tab: 'account', overlay: null },
+  home: buildPreset(),
+  'product-detail': buildPreset({
+    shopStack: [createHomeRoute(), { name: 'ProductDetail', productId: 'apple' }],
+  }),
+  explore: buildPreset({
+    tab: 'explore',
+  }),
+  beverages: buildPreset({
+    tab: 'explore',
+    exploreStack: [createExploreRoute(), { name: 'Beverages' }],
+  }),
+  search: buildPreset({
+    tab: 'explore',
+    exploreStack: [createExploreRoute(), { name: 'Search' }],
+  }),
+  filter: buildPreset({
+    tab: 'explore',
+    exploreStack: [createExploreRoute(), { name: 'Search' }, { name: 'Filter' }],
+  }),
+  cart: buildPreset({
+    tab: 'cart',
+  }),
+  checkout: buildPreset({
+    tab: 'cart',
+    overlay: 'checkout',
+  }),
+  'order-accepted': buildPreset({
+    tab: 'cart',
+    overlay: 'orderAccepted',
+  }),
+  favourite: buildPreset({
+    tab: 'favourite',
+  }),
+  error: buildPreset({
+    tab: 'favourite',
+    overlay: 'error',
+  }),
+  account: buildPreset({
+    tab: 'account',
+  }),
 };
 
 function getInitialPreset() {
   if (Platform.OS !== 'web' || typeof window === 'undefined') {
-    return { tab: 'cart', overlay: null };
+    return buildPreset();
   }
 
   const params = new URLSearchParams(window.location.search);
   const screen = params.get('screen');
+  const preset = SCREEN_PRESETS[screen] ?? buildPreset();
 
-  return SCREEN_PRESETS[screen] ?? { tab: 'cart', overlay: null };
+  return {
+    ...preset,
+    shopStack: preset.shopStack.map((route) => ({ ...route })),
+    exploreStack: preset.exploreStack.map((route) => ({ ...route })),
+    selectedFilters: cloneFilters(preset.selectedFilters),
+  };
 }
 
 function PaymentBadge() {
@@ -169,18 +250,53 @@ function AppContent() {
   const preset = useMemo(() => getInitialPreset(), []);
   const [activeTab, setActiveTab] = useState(preset.tab);
   const [overlay, setOverlay] = useState(preset.overlay);
+  const [shopStack, setShopStack] = useState(preset.shopStack);
+  const [exploreStack, setExploreStack] = useState(preset.exploreStack);
+  const [searchQuery, setSearchQuery] = useState(preset.searchQuery);
+  const [selectedFilters, setSelectedFilters] = useState(preset.selectedFilters);
   const [cartItems, setCartItems] = useState(() =>
     defaultCartSeed.map((entry) => ({
       ...buildCartItem(entry.productId),
       quantity: entry.quantity,
     }))
   );
-  const [favoriteItems] = useState(() => defaultFavoriteIds.map((productId) => getProductDetail(productId)));
+  const [favoriteIds, setFavoriteIds] = useState(defaultFavoriteIds);
 
+  const shopRoute = shopStack[shopStack.length - 1] ?? createHomeRoute();
+  const exploreRoute = exploreStack[exploreStack.length - 1] ?? createExploreRoute();
+  const favoriteItems = useMemo(
+    () => favoriteIds.map((productId) => getProductDetail(productId)),
+    [favoriteIds]
+  );
   const total = useMemo(
     () => cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
     [cartItems]
   );
+
+  const addProductToCart = (productId, quantity = 1) => {
+    setCartItems((currentItems) => {
+      const matchedItem = currentItems.find((item) => item.id === productId);
+
+      if (matchedItem) {
+        return currentItems.map((item) =>
+          item.id === productId
+            ? {
+                ...item,
+                quantity: item.quantity + quantity,
+              }
+            : item
+        );
+      }
+
+      return [
+        ...currentItems,
+        {
+          ...buildCartItem(productId),
+          quantity,
+        },
+      ];
+    });
+  };
 
   const changeCartItemQuantity = (id, delta) => {
     setCartItems((currentItems) =>
@@ -197,41 +313,222 @@ function AppContent() {
     );
   };
 
+  const toggleFavorite = (productId) => {
+    setFavoriteIds((currentIds) =>
+      currentIds.includes(productId)
+        ? currentIds.filter((id) => id !== productId)
+        : [...currentIds, productId]
+    );
+  };
+
+  const resetToHome = () => {
+    setOverlay(null);
+    setActiveTab('shop');
+    setShopStack([createHomeRoute()]);
+  };
+
+  const openShopProductDetail = (productId) => {
+    setOverlay(null);
+    setActiveTab('shop');
+    setShopStack([createHomeRoute(), { name: 'ProductDetail', productId }]);
+  };
+
+  const goBackInShop = () => {
+    setShopStack((currentStack) =>
+      currentStack.length > 1 ? currentStack.slice(0, -1) : [createHomeRoute()]
+    );
+  };
+
+  const openExploreRoot = () => {
+    setOverlay(null);
+    setActiveTab('explore');
+    setExploreStack([createExploreRoute()]);
+  };
+
+  const openSearch = (nextQuery = searchQuery) => {
+    setOverlay(null);
+    setActiveTab('explore');
+    setSearchQuery(nextQuery);
+    setExploreStack([createExploreRoute(), { name: 'Search' }]);
+  };
+
+  const openExploreCategory = (category) => {
+    if (category.routeName === 'Beverages') {
+      setOverlay(null);
+      setActiveTab('explore');
+      setExploreStack([createExploreRoute(), { name: 'Beverages' }]);
+      return;
+    }
+
+    const categoryQuery = category.name.replace(/\n/g, ' ');
+    setSelectedFilters(createEmptyFilters());
+    openSearch(categoryQuery);
+  };
+
+  const openFilter = () => {
+    setExploreStack((currentStack) => {
+      if (currentStack[currentStack.length - 1]?.name === 'Filter') {
+        return currentStack;
+      }
+
+      return [...currentStack, { name: 'Filter' }];
+    });
+  };
+
+  const goBackInExplore = () => {
+    setExploreStack((currentStack) =>
+      currentStack.length > 1 ? currentStack.slice(0, -1) : [createExploreRoute()]
+    );
+  };
+
+  const applyFilters = (filters) => {
+    setSelectedFilters(cloneFilters(filters));
+    setExploreStack([createExploreRoute(), { name: 'Search' }]);
+  };
+
+  const openExploreProductDetail = (productId) => {
+    setExploreStack((currentStack) => {
+      const stackWithoutFilter =
+        currentStack[currentStack.length - 1]?.name === 'Filter'
+          ? currentStack.slice(0, -1)
+          : currentStack;
+
+      return [...stackWithoutFilter, { name: 'ProductDetail', productId }];
+    });
+  };
+
+  const addAllFavoritesToCart = () => {
+    setCartItems((currentItems) => {
+      let nextItems = [...currentItems];
+
+      favoriteIds.forEach((productId) => {
+        const matchedIndex = nextItems.findIndex((item) => item.id === productId);
+
+        if (matchedIndex >= 0) {
+          nextItems[matchedIndex] = {
+            ...nextItems[matchedIndex],
+            quantity: nextItems[matchedIndex].quantity + 1,
+          };
+          return;
+        }
+
+        nextItems = [
+          ...nextItems,
+          {
+            ...buildCartItem(productId),
+            quantity: 1,
+          },
+        ];
+      });
+
+      return nextItems;
+    });
+
+    setOverlay(null);
+    setActiveTab('cart');
+  };
+
   const handleTabChange = (nextTab) => {
     setOverlay(null);
     setActiveTab(nextTab);
+
+    if (nextTab === 'shop') {
+      setShopStack([createHomeRoute()]);
+    }
+
+    if (nextTab === 'explore') {
+      setExploreStack([createExploreRoute()]);
+    }
   };
 
   const handlePlaceOrder = () => {
     setOverlay('orderAccepted');
   };
 
-  const handleBackHome = () => {
-    setOverlay(null);
-    setActiveTab('shop');
-  };
-
-  const renderTabScreen = () => {
-    if (activeTab === 'shop') {
+  const renderShopScreen = () => {
+    if (shopRoute.name === 'ProductDetail') {
       return (
-        <PlaceholderScreen
-          eyebrow="Nectar Grocery"
-          title="Shop Screen"
-          subtitle="A clean PC preview so the requested checkout and account flows can be reviewed quickly."
-          accent="green"
+        <ProductDetailScreen
+          productId={shopRoute.productId}
+          onBack={goBackInShop}
+          onAddToBasket={addProductToCart}
+          onToggleFavorite={toggleFavorite}
+          isFavorite={favoriteIds.includes(shopRoute.productId)}
         />
       );
     }
 
-    if (activeTab === 'explore') {
+    return (
+      <HomeScreen
+        onOpenExplore={openExploreRoot}
+        onOpenProductDetail={openShopProductDetail}
+        onAddProduct={addProductToCart}
+      />
+    );
+  };
+
+  const renderExploreScreen = () => {
+    if (exploreRoute.name === 'Beverages') {
       return (
-        <PlaceholderScreen
-          eyebrow="Product Discovery"
-          title="Explore Screen"
-          subtitle="Use the bottom tabs to jump into Cart, Favourite, and Account states."
-          accent="peach"
+        <BeveragesScreen
+          onBack={goBackInExplore}
+          onOpenProductDetail={openExploreProductDetail}
+          onAddProduct={addProductToCart}
+          onOpenSearch={() => openSearch('egg')}
         />
       );
+    }
+
+    if (exploreRoute.name === 'Search') {
+      return (
+        <SearchScreen
+          query={searchQuery}
+          selectedFilters={selectedFilters}
+          onChangeQuery={setSearchQuery}
+          onOpenFilters={openFilter}
+          onOpenProductDetail={openExploreProductDetail}
+          onAddProduct={addProductToCart}
+        />
+      );
+    }
+
+    if (exploreRoute.name === 'Filter') {
+      return (
+        <FilterScreen
+          appliedFilters={selectedFilters}
+          onClose={goBackInExplore}
+          onApplyFilters={applyFilters}
+        />
+      );
+    }
+
+    if (exploreRoute.name === 'ProductDetail') {
+      return (
+        <ProductDetailScreen
+          productId={exploreRoute.productId}
+          onBack={goBackInExplore}
+          onAddToBasket={addProductToCart}
+          onToggleFavorite={toggleFavorite}
+          isFavorite={favoriteIds.includes(exploreRoute.productId)}
+        />
+      );
+    }
+
+    return (
+      <ExploreScreen
+        onOpenSearch={() => openSearch('egg')}
+        onOpenCategory={openExploreCategory}
+      />
+    );
+  };
+
+  const renderTabScreen = () => {
+    if (activeTab === 'shop') {
+      return renderShopScreen();
+    }
+
+    if (activeTab === 'explore') {
+      return renderExploreScreen();
     }
 
     if (activeTab === 'cart') {
@@ -253,7 +550,8 @@ function AppContent() {
       return (
         <FavouriteScreen
           items={favoriteItems}
-          onAddAllToCart={() => setOverlay('error')}
+          onAddAllToCart={addAllFavoritesToCart}
+          onOpenItem={openShopProductDetail}
         />
       );
     }
@@ -266,7 +564,10 @@ function AppContent() {
     );
   };
 
+  const currentRouteName =
+    activeTab === 'shop' ? shopRoute.name : activeTab === 'explore' ? exploreRoute.name : activeTab;
   const showOrderAccepted = overlay === 'orderAccepted';
+  const showTabBar = !showOrderAccepted && !['ProductDetail', 'Filter'].includes(currentRouteName);
 
   return (
     <View style={styles.shell}>
@@ -279,13 +580,13 @@ function AppContent() {
               setOverlay(null);
               setActiveTab('cart');
             }}
-            onBackHome={handleBackHome}
+            onBackHome={resetToHome}
           />
         ) : (
           <>
             {renderTabScreen()}
 
-            <BottomTabBar activeTab={activeTab} onSelect={handleTabChange} />
+            {showTabBar ? <BottomTabBar activeTab={activeTab} onSelect={handleTabChange} /> : null}
 
             {overlay === 'checkout' ? (
               <CheckoutSheet
@@ -299,7 +600,7 @@ function AppContent() {
               <ErrorModal
                 onClose={() => setOverlay(null)}
                 onRetry={() => setOverlay(null)}
-                onBackHome={handleBackHome}
+                onBackHome={resetToHome}
               />
             ) : null}
           </>

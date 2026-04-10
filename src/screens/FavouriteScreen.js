@@ -13,9 +13,9 @@ import PhoneStatusBar from '../components/PhoneStatusBar';
 import { getImageSource, nectarTheme } from '../data/nectarData';
 import { scale } from '../utils/layout';
 
-function FavouriteRow({ item }) {
+function FavouriteRow({ item, onPress }) {
   return (
-    <View style={styles.row}>
+    <Pressable style={styles.row} onPress={onPress}>
       <Image source={getImageSource(item.thumbnailKey)} style={styles.image} resizeMode="contain" />
 
       <View style={styles.meta}>
@@ -27,11 +27,11 @@ function FavouriteRow({ item }) {
         <Text style={styles.price}>${item.price.toFixed(2)}</Text>
         <Ionicons name="chevron-forward" size={scale(22)} color={nectarTheme.text} />
       </View>
-    </View>
+    </Pressable>
   );
 }
 
-export default function FavouriteScreen({ items, onAddAllToCart }) {
+export default function FavouriteScreen({ items, onAddAllToCart, onOpenItem }) {
   return (
     <View style={styles.screen}>
       <PhoneStatusBar />
@@ -44,12 +44,19 @@ export default function FavouriteScreen({ items, onAddAllToCart }) {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {items.map((item) => (
-          <View key={item.id}>
-            <FavouriteRow item={item} />
-            <View style={styles.divider} />
+        {items.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyTitle}>No favourites yet</Text>
+            <Text style={styles.emptyText}>Save products you love and they will show up here.</Text>
           </View>
-        ))}
+        ) : (
+          items.map((item) => (
+            <View key={item.id}>
+              <FavouriteRow item={item} onPress={() => onOpenItem?.(item.id)} />
+              <View style={styles.divider} />
+            </View>
+          ))
+        )}
       </ScrollView>
 
       <View style={styles.footer}>
@@ -91,6 +98,25 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
     backgroundColor: '#EDEDED',
+  },
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: scale(48),
+  },
+  emptyTitle: {
+    fontSize: scale(20),
+    lineHeight: scale(24),
+    fontWeight: '700',
+    color: nectarTheme.text,
+  },
+  emptyText: {
+    marginTop: scale(8),
+    fontSize: scale(15),
+    lineHeight: scale(22),
+    textAlign: 'center',
+    color: '#7B7B82',
+    maxWidth: scale(230),
   },
   image: {
     width: scale(54),
