@@ -5,14 +5,6 @@ MSSV: 23810310338
 
 ## Screens da hoan thanh
 
-- Home
-- Product Detail
-- Explore
-- Beverages
-- Search
-- Filter
-- My Cart
-- Favourite
 - Checkout
 - Order accepted
 - Error
@@ -20,37 +12,6 @@ MSSV: 23810310338
 
 ## Screenshot ket qua
 
-### Home
-
-![Home](./screenshots/home.png)
-
-### Product Detail
-
-![Product Detail](./screenshots/product-detail.png)
-
-### Explore
-
-![Explore](./screenshots/explore.png)
-
-### Beverages
-
-![Beverages](./screenshots/beverages.png)
-
-### Search
-
-![Search](./screenshots/search.png)
-
-### Filter
-
-![Filter](./screenshots/filter.png)
-
-### My Cart
-
-![My Cart](./screenshots/cart.png)
-
-### Favourite
-
-![Favourite](./screenshots/favourite.png)
 
 ### Checkout
 
