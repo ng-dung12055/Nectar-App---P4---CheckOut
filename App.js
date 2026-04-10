@@ -398,34 +398,7 @@ function AppContent() {
   };
 
   const addAllFavoritesToCart = () => {
-    setCartItems((currentItems) => {
-      let nextItems = [...currentItems];
-
-      favoriteIds.forEach((productId) => {
-        const matchedIndex = nextItems.findIndex((item) => item.id === productId);
-
-        if (matchedIndex >= 0) {
-          nextItems[matchedIndex] = {
-            ...nextItems[matchedIndex],
-            quantity: nextItems[matchedIndex].quantity + 1,
-          };
-          return;
-        }
-
-        nextItems = [
-          ...nextItems,
-          {
-            ...buildCartItem(productId),
-            quantity: 1,
-          },
-        ];
-      });
-
-      return nextItems;
-    });
-
-    setOverlay(null);
-    setActiveTab('cart');
+    setOverlay('error');
   };
 
   const handleTabChange = (nextTab) => {
