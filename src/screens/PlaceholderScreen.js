@@ -8,6 +8,7 @@ import {
 
 import PhoneStatusBar from '../components/PhoneStatusBar';
 import { getImageSource, nectarTheme } from '../data/nectarData';
+import { scale } from '../utils/layout';
 
 const ACCENT_MAP = {
   green: {
@@ -58,73 +59,73 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: 24,
+    paddingHorizontal: scale(24),
   },
   heroCard: {
-    borderRadius: 28,
-    padding: 24,
+    borderRadius: scale(24),
+    padding: scale(22),
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 24,
+    marginTop: scale(20),
   },
   copyColumn: {
     flex: 1,
-    paddingRight: 16,
+    paddingRight: scale(14),
   },
   eyebrow: {
-    fontSize: 14,
-    lineHeight: 18,
+    fontSize: scale(13),
+    lineHeight: scale(18),
     fontWeight: '700',
     color: '#6B7280',
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
   title: {
-    marginTop: 10,
-    fontSize: 30,
-    lineHeight: 36,
+    marginTop: scale(10),
+    fontSize: scale(26),
+    lineHeight: scale(32),
     fontWeight: '700',
     color: nectarTheme.text,
   },
   subtitle: {
-    marginTop: 12,
-    fontSize: 17,
-    lineHeight: 25,
+    marginTop: scale(10),
+    fontSize: scale(15),
+    lineHeight: scale(22),
     color: '#6B7280',
   },
   heroImage: {
-    width: 112,
-    height: 112,
+    width: scale(96),
+    height: scale(96),
   },
   dotRow: {
     flexDirection: 'row',
-    marginTop: 22,
+    marginTop: scale(18),
   },
   dot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    marginRight: 8,
+    width: scale(10),
+    height: scale(10),
+    borderRadius: scale(5),
+    marginRight: scale(8),
   },
   dotMuted: {
     backgroundColor: '#D1D5DB',
   },
   noteCard: {
-    marginTop: 22,
-    borderRadius: 24,
-    padding: 22,
+    marginTop: scale(20),
+    borderRadius: scale(22),
+    padding: scale(20),
     backgroundColor: '#F8F8F8',
   },
   noteTitle: {
-    fontSize: 22,
-    lineHeight: 28,
+    fontSize: scale(20),
+    lineHeight: scale(26),
     fontWeight: '700',
     color: nectarTheme.text,
   },
   noteText: {
-    marginTop: 10,
-    fontSize: 16,
-    lineHeight: 24,
+    marginTop: scale(10),
+    fontSize: scale(15),
+    lineHeight: scale(22),
     color: '#6B7280',
   },
 });

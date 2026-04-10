@@ -1,8 +1,17 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { isWebPreview, scale } from '../utils/layout';
 
 export default function PhoneStatusBar() {
+  const insets = useSafeAreaInsets();
+
+  if (!isWebPreview) {
+    return <View style={{ height: Math.max(insets.top, scale(10)) }} />;
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.time}>9:41</Text>
@@ -15,7 +24,7 @@ export default function PhoneStatusBar() {
           <View style={[styles.signalBar, styles.barMax]} />
         </View>
 
-        <Ionicons name="wifi" size={22} color="#0F1020" />
+        <Ionicons name="wifi" size={scale(22)} color="#0F1020" />
 
         <View style={styles.battery}>
           <View style={styles.batteryLevel} />
@@ -31,13 +40,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingTop: 18,
-    paddingHorizontal: 26,
-    marginBottom: 14,
+    paddingTop: scale(18),
+    paddingHorizontal: scale(26),
+    marginBottom: scale(14),
   },
   time: {
-    fontSize: 22,
-    lineHeight: 26,
+    fontSize: scale(22),
+    lineHeight: scale(26),
     fontWeight: '700',
     color: '#11111F',
   },
@@ -48,46 +57,46 @@ const styles = StyleSheet.create({
   signal: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    marginRight: 10,
+    marginRight: scale(10),
   },
   signalBar: {
-    width: 6,
-    borderRadius: 3,
+    width: scale(6),
+    borderRadius: scale(3),
     backgroundColor: '#0F1020',
-    marginLeft: 3,
+    marginLeft: scale(3),
   },
   barShort: {
-    height: 10,
+    height: scale(10),
   },
   barMedium: {
-    height: 14,
+    height: scale(14),
   },
   barTall: {
-    height: 18,
+    height: scale(18),
   },
   barMax: {
-    height: 22,
+    height: scale(22),
   },
   battery: {
-    width: 30,
-    height: 16,
+    width: scale(30),
+    height: scale(16),
     borderWidth: 2,
     borderColor: '#0F1020',
-    borderRadius: 4,
-    marginLeft: 10,
+    borderRadius: scale(4),
+    marginLeft: scale(10),
     justifyContent: 'center',
-    paddingHorizontal: 2,
+    paddingHorizontal: scale(2),
   },
   batteryLevel: {
-    height: 8,
-    borderRadius: 2,
+    height: scale(8),
+    borderRadius: scale(2),
     backgroundColor: '#0F1020',
   },
   batteryTip: {
     position: 'absolute',
-    right: -4,
-    width: 2,
-    height: 8,
+    right: scale(-4),
+    width: scale(2),
+    height: scale(8),
     borderRadius: 1,
     backgroundColor: '#8C8D92',
   },

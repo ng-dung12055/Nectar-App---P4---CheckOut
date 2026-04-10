@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import BottomTabBar from './src/components/BottomTabBar';
 import {
@@ -19,6 +20,7 @@ import CartScreen from './src/screens/CartScreen';
 import FavouriteScreen from './src/screens/FavouriteScreen';
 import OrderAcceptedScreen from './src/screens/OrderAcceptedScreen';
 import PlaceholderScreen from './src/screens/PlaceholderScreen';
+import { isWebPreview, scale } from './src/utils/layout';
 
 const SCREEN_PRESETS = {
   checkout: { tab: 'cart', overlay: 'checkout' },
@@ -48,16 +50,25 @@ function PaymentBadge() {
 }
 
 function CheckoutSheet({ total, onClose, onPlaceOrder }) {
+  const insets = useSafeAreaInsets();
+
   return (
     <View style={styles.overlayRoot}>
       <Pressable style={styles.overlayBackdrop} onPress={onClose} />
 
-      <View style={styles.checkoutSheet}>
+      <View
+        style={[
+          styles.checkoutSheet,
+          {
+            paddingBottom: scale(26) + Math.max(insets.bottom, scale(10)),
+          },
+        ]}
+      >
         <View style={styles.sheetHeader}>
           <Text style={styles.sheetTitle}>Checkout</Text>
 
           <Pressable hitSlop={10} onPress={onClose}>
-            <Ionicons name="close" size={36} color={nectarTheme.text} />
+            <Ionicons name="close" size={scale(30)} color={nectarTheme.text} />
           </Pressable>
         </View>
 
@@ -66,7 +77,7 @@ function CheckoutSheet({ total, onClose, onPlaceOrder }) {
             <Text style={styles.checkoutLabel}>Delivery</Text>
             <View style={styles.checkoutValueWrap}>
               <Text style={styles.checkoutValue}>Select Method</Text>
-              <Ionicons name="chevron-forward" size={28} color={nectarTheme.text} />
+              <Ionicons name="chevron-forward" size={scale(24)} color={nectarTheme.text} />
             </View>
           </View>
 
@@ -74,7 +85,7 @@ function CheckoutSheet({ total, onClose, onPlaceOrder }) {
             <Text style={styles.checkoutLabel}>Pament</Text>
             <View style={styles.checkoutValueWrap}>
               <PaymentBadge />
-              <Ionicons name="chevron-forward" size={28} color={nectarTheme.text} />
+              <Ionicons name="chevron-forward" size={scale(24)} color={nectarTheme.text} />
             </View>
           </View>
 
@@ -82,7 +93,7 @@ function CheckoutSheet({ total, onClose, onPlaceOrder }) {
             <Text style={styles.checkoutLabel}>Promo Code</Text>
             <View style={styles.checkoutValueWrap}>
               <Text style={styles.checkoutValue}>Pick discount</Text>
-              <Ionicons name="chevron-forward" size={28} color={nectarTheme.text} />
+              <Ionicons name="chevron-forward" size={scale(24)} color={nectarTheme.text} />
             </View>
           </View>
 
@@ -90,7 +101,7 @@ function CheckoutSheet({ total, onClose, onPlaceOrder }) {
             <Text style={styles.checkoutLabel}>Total Cost</Text>
             <View style={styles.checkoutValueWrap}>
               <Text style={styles.checkoutCost}>${total.toFixed(2)}</Text>
-              <Ionicons name="chevron-forward" size={28} color={nectarTheme.text} />
+              <Ionicons name="chevron-forward" size={scale(24)} color={nectarTheme.text} />
             </View>
           </View>
         </View>
@@ -111,13 +122,22 @@ function CheckoutSheet({ total, onClose, onPlaceOrder }) {
 }
 
 function ErrorModal({ onClose, onRetry, onBackHome }) {
+  const insets = useSafeAreaInsets();
+
   return (
     <View style={styles.overlayRoot}>
       <View style={styles.overlayBackdrop} />
 
-      <View style={styles.errorCard}>
+      <View
+        style={[
+          styles.errorCard,
+          {
+            marginBottom: scale(16) + Math.max(insets.bottom, scale(12)),
+          },
+        ]}
+      >
         <Pressable hitSlop={10} style={styles.errorClose} onPress={onClose}>
-          <Ionicons name="close" size={34} color={nectarTheme.text} />
+          <Ionicons name="close" size={scale(28)} color={nectarTheme.text} />
         </Pressable>
 
         <Image source={getGraphicSource('errorBag')} style={styles.errorArtwork} resizeMode="contain" />
@@ -138,6 +158,14 @@ function ErrorModal({ onClose, onRetry, onBackHome }) {
 }
 
 export default function App() {
+  return (
+    <SafeAreaProvider>
+      <AppContent />
+    </SafeAreaProvider>
+  );
+}
+
+function AppContent() {
   const preset = useMemo(() => getInitialPreset(), []);
   const [activeTab, setActiveTab] = useState(preset.tab);
   const [overlay, setOverlay] = useState(preset.overlay);
@@ -242,7 +270,7 @@ export default function App() {
 
   return (
     <View style={styles.shell}>
-      <StatusBar style="dark" />
+      <StatusBar style="dark" translucent={!isWebPreview} />
 
       <View style={styles.phoneFrame}>
         {showOrderAccepted ? (
@@ -284,10 +312,10 @@ export default function App() {
 const styles = StyleSheet.create({
   shell: {
     flex: 1,
-    backgroundColor: '#EEF1ED',
+    backgroundColor: isWebPreview ? '#EEF1ED' : '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: Platform.OS === 'web' ? 24 : 0,
+    paddingVertical: isWebPreview ? scale(24) : 0,
   },
   phoneFrame: {
     flex: 1,
@@ -295,12 +323,12 @@ const styles = StyleSheet.create({
     maxWidth: 430,
     backgroundColor: '#FFFFFF',
     overflow: 'hidden',
-    borderRadius: Platform.OS === 'web' ? 34 : 0,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 18 },
-    shadowOpacity: 0.1,
-    shadowRadius: 28,
-    elevation: 12,
+    borderRadius: isWebPreview ? scale(34) : 0,
+    shadowColor: isWebPreview ? '#000000' : 'transparent',
+    shadowOffset: { width: 0, height: scale(18) },
+    shadowOpacity: isWebPreview ? 0.1 : 0,
+    shadowRadius: scale(28),
+    elevation: isWebPreview ? 12 : 0,
   },
   overlayRoot: {
     ...StyleSheet.absoluteFillObject,
@@ -312,21 +340,20 @@ const styles = StyleSheet.create({
   },
   checkoutSheet: {
     backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    paddingHorizontal: 26,
-    paddingTop: 30,
-    paddingBottom: 44,
+    borderTopLeftRadius: scale(28),
+    borderTopRightRadius: scale(28),
+    paddingHorizontal: scale(24),
+    paddingTop: scale(24),
   },
   sheetHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    marginBottom: scale(16),
   },
   sheetTitle: {
-    fontSize: 36,
-    lineHeight: 42,
+    fontSize: scale(30),
+    lineHeight: scale(36),
     fontWeight: '700',
     color: nectarTheme.text,
   },
@@ -335,7 +362,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#EAEAEA',
   },
   checkoutRow: {
-    paddingVertical: 22,
+    paddingVertical: scale(18),
     borderBottomWidth: 1,
     borderBottomColor: '#EAEAEA',
     flexDirection: 'row',
@@ -343,8 +370,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   checkoutLabel: {
-    fontSize: 24,
-    lineHeight: 30,
+    fontSize: scale(20),
+    lineHeight: scale(26),
     fontWeight: '500',
     color: '#8D8E95',
   },
@@ -353,48 +380,48 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   checkoutValue: {
-    fontSize: 22,
-    lineHeight: 28,
+    fontSize: scale(18),
+    lineHeight: scale(24),
     fontWeight: '600',
     color: nectarTheme.text,
-    marginRight: 10,
+    marginRight: scale(8),
   },
   checkoutCost: {
-    fontSize: 22,
-    lineHeight: 28,
+    fontSize: scale(18),
+    lineHeight: scale(24),
     fontWeight: '700',
     color: nectarTheme.text,
-    marginRight: 10,
+    marginRight: scale(8),
   },
   paymentBadge: {
-    width: 42,
-    height: 26,
-    borderRadius: 4,
+    width: scale(38),
+    height: scale(24),
+    borderRadius: scale(4),
     backgroundColor: '#456AF6',
     justifyContent: 'center',
-    marginRight: 12,
+    marginRight: scale(10),
   },
   paymentCircleRed: {
     position: 'absolute',
-    left: 10,
-    width: 15,
-    height: 15,
-    borderRadius: 8,
+    left: scale(9),
+    width: scale(14),
+    height: scale(14),
+    borderRadius: scale(7),
     backgroundColor: '#ED1C2E',
   },
   paymentCircleOrange: {
     position: 'absolute',
-    left: 22,
-    width: 15,
-    height: 15,
-    borderRadius: 8,
+    left: scale(20),
+    width: scale(14),
+    height: scale(14),
+    borderRadius: scale(7),
     backgroundColor: '#F9B445',
   },
   termsText: {
-    marginTop: 22,
-    marginBottom: 28,
-    fontSize: 20,
-    lineHeight: 30,
+    marginTop: scale(18),
+    marginBottom: scale(22),
+    fontSize: scale(17),
+    lineHeight: scale(26),
     color: '#8D8E95',
   },
   termsStrong: {
@@ -402,59 +429,58 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   primaryButton: {
-    height: 74,
-    borderRadius: 26,
+    height: scale(62),
+    borderRadius: scale(22),
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: nectarTheme.green,
   },
   primaryButtonText: {
-    fontSize: 22,
-    lineHeight: 28,
+    fontSize: scale(19),
+    lineHeight: scale(24),
     fontWeight: '700',
     color: '#FFFFFF',
   },
   errorCard: {
-    marginHorizontal: 26,
-    marginBottom: 84,
-    borderRadius: 30,
+    marginHorizontal: scale(24),
+    borderRadius: scale(28),
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: 24,
-    paddingTop: 28,
-    paddingBottom: 26,
+    paddingHorizontal: scale(22),
+    paddingTop: scale(22),
+    paddingBottom: scale(22),
     alignItems: 'center',
   },
   errorClose: {
     alignSelf: 'flex-start',
   },
   errorArtwork: {
-    width: 246,
-    height: 240,
-    marginTop: 24,
-    marginBottom: 26,
+    width: scale(206),
+    height: scale(200),
+    marginTop: scale(18),
+    marginBottom: scale(20),
   },
   errorTitle: {
-    fontSize: 36,
-    lineHeight: 42,
+    fontSize: scale(30),
+    lineHeight: scale(36),
     fontWeight: '700',
     color: nectarTheme.text,
     textAlign: 'center',
   },
   errorText: {
-    marginTop: 18,
-    marginBottom: 34,
-    fontSize: 24,
-    lineHeight: 30,
+    marginTop: scale(14),
+    marginBottom: scale(24),
+    fontSize: scale(19),
+    lineHeight: scale(26),
     color: '#8D8E95',
     textAlign: 'center',
   },
   secondaryTextButton: {
-    marginTop: 26,
+    marginTop: scale(18),
     paddingVertical: 4,
   },
   secondaryTextButtonLabel: {
-    fontSize: 20,
-    lineHeight: 28,
+    fontSize: scale(18),
+    lineHeight: scale(24),
     fontWeight: '700',
     color: nectarTheme.text,
   },

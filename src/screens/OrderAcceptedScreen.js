@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 
 import { getGraphicSource, nectarTheme } from '../data/nectarData';
+import { scale } from '../utils/layout';
 
 export default function OrderAcceptedScreen({ onTrackOrder, onBackHome }) {
   return (
@@ -21,7 +22,7 @@ export default function OrderAcceptedScreen({ onTrackOrder, onBackHome }) {
 
         <Text style={styles.title}>Your Order has been{'\n'}accepted</Text>
         <Text style={styles.subtitle}>
-          Your items has been placcd and is on{'\n'}it’s way to being processed
+          Your items have been placed and are{'\n'}on the way to being processed
         </Text>
       </View>
 
@@ -43,8 +44,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
     justifyContent: 'space-between',
-    paddingTop: 56,
-    paddingBottom: 58,
+    paddingTop: scale(36),
+    paddingBottom: scale(40),
   },
   blurOrb: {
     position: 'absolute',
@@ -52,73 +53,73 @@ const styles = StyleSheet.create({
     opacity: 0.18,
   },
   orbLeft: {
-    width: 260,
-    height: 260,
+    width: scale(220),
+    height: scale(220),
     backgroundColor: '#F9D4CA',
     top: 0,
-    left: -120,
+    left: scale(-120),
   },
   orbCenter: {
-    width: 320,
-    height: 320,
+    width: scale(280),
+    height: scale(280),
     backgroundColor: '#DDF6EE',
-    top: 180,
-    left: 60,
+    top: scale(150),
+    left: scale(56),
   },
   orbRight: {
-    width: 260,
-    height: 260,
+    width: scale(220),
+    height: scale(220),
     backgroundColor: '#E8DDFE',
-    bottom: 140,
-    right: -120,
+    bottom: scale(120),
+    right: scale(-120),
   },
   content: {
     alignItems: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: scale(24),
   },
   badge: {
-    width: 324,
-    height: 324,
-    marginBottom: 24,
+    width: scale(276),
+    height: scale(276),
+    marginBottom: scale(18),
   },
   title: {
-    fontSize: 34,
-    lineHeight: 42,
+    fontSize: scale(30),
+    lineHeight: scale(36),
     fontWeight: '700',
     color: nectarTheme.text,
     textAlign: 'center',
   },
   subtitle: {
-    marginTop: 24,
-    fontSize: 21,
-    lineHeight: 31,
+    marginTop: scale(18),
+    fontSize: scale(18),
+    lineHeight: scale(26),
     color: '#8D8E95',
     textAlign: 'center',
   },
   footer: {
-    paddingHorizontal: 24,
+    paddingHorizontal: scale(24),
   },
   trackButton: {
-    height: 74,
-    borderRadius: 26,
+    height: scale(64),
+    borderRadius: scale(22),
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: nectarTheme.green,
   },
   trackButtonText: {
-    fontSize: 22,
-    lineHeight: 28,
+    fontSize: scale(19),
+    lineHeight: scale(24),
     fontWeight: '700',
     color: '#FFFFFF',
   },
   backButton: {
-    marginTop: 28,
+    marginTop: scale(20),
     alignItems: 'center',
     justifyContent: 'center',
   },
   backButtonText: {
-    fontSize: 20,
-    lineHeight: 28,
+    fontSize: scale(18),
+    lineHeight: scale(24),
     fontWeight: '700',
     color: nectarTheme.text,
   },

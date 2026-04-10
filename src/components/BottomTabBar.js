@@ -1,8 +1,10 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { nectarTheme } from '../data/nectarData';
+import { isWebPreview, scale } from '../utils/layout';
 
 const TAB_ITEMS = [
   { key: 'shop', label: 'Shop', icon: 'storefront-outline', activeIcon: 'storefront' },
@@ -13,8 +15,17 @@ const TAB_ITEMS = [
 ];
 
 export default function BottomTabBar({ activeTab, onSelect }) {
+  const insets = useSafeAreaInsets();
+
   return (
-    <View style={styles.wrap}>
+    <View
+      style={[
+        styles.wrap,
+        {
+          paddingBottom: isWebPreview ? scale(10) : Math.max(insets.bottom, scale(12)),
+        },
+      ]}
+    >
       <View style={styles.bar}>
         {TAB_ITEMS.map((tabItem) => {
           const isActive = tabItem.key === activeTab;
@@ -27,7 +38,7 @@ export default function BottomTabBar({ activeTab, onSelect }) {
             >
               <Ionicons
                 name={isActive ? tabItem.activeIcon : tabItem.icon}
-                size={28}
+                size={scale(24)}
                 color={isActive ? nectarTheme.green : nectarTheme.text}
               />
               <Text style={[styles.label, isActive ? styles.activeLabel : null]}>{tabItem.label}</Text>
@@ -36,7 +47,7 @@ export default function BottomTabBar({ activeTab, onSelect }) {
         })}
       </View>
 
-      <View style={styles.homeIndicator} />
+      {isWebPreview ? <View style={styles.homeIndicator} /> : null}
     </View>
   );
 }
@@ -47,20 +58,19 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    paddingTop: 12,
-    paddingBottom: 10,
+    paddingTop: scale(10),
     backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 34,
-    borderTopRightRadius: 34,
+    borderTopLeftRadius: isWebPreview ? scale(34) : scale(24),
+    borderTopRightRadius: isWebPreview ? scale(34) : scale(24),
     shadowColor: '#000000',
-    shadowOffset: { width: 0, height: -8 },
+    shadowOffset: { width: 0, height: scale(-8) },
     shadowOpacity: 0.06,
-    shadowRadius: 22,
-    elevation: 14,
+    shadowRadius: scale(22),
+    elevation: isWebPreview ? 14 : 10,
   },
   bar: {
     flexDirection: 'row',
-    paddingHorizontal: 6,
+    paddingHorizontal: scale(6),
   },
   tab: {
     flex: 1,
@@ -68,9 +78,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   label: {
-    marginTop: 8,
-    fontSize: 12,
-    lineHeight: 16,
+    marginTop: scale(6),
+    fontSize: scale(12),
+    lineHeight: scale(16),
     fontWeight: '600',
     color: nectarTheme.text,
   },
@@ -79,10 +89,10 @@ const styles = StyleSheet.create({
   },
   homeIndicator: {
     alignSelf: 'center',
-    width: 118,
-    height: 5,
+    width: scale(118),
+    height: scale(5),
     borderRadius: 999,
     backgroundColor: '#E1E1E1',
-    marginTop: 16,
+    marginTop: scale(16),
   },
 });

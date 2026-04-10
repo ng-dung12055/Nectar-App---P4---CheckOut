@@ -11,18 +11,19 @@ import { Ionicons } from '@expo/vector-icons';
 
 import PhoneStatusBar from '../components/PhoneStatusBar';
 import { getImageSource, nectarTheme } from '../data/nectarData';
+import { scale } from '../utils/layout';
 
 function QuantityControl({ quantity, onDecrease, onIncrease }) {
   return (
     <View style={styles.quantityControl}>
       <Pressable style={styles.quantityButton} onPress={onDecrease}>
-        <Ionicons name="remove" size={22} color="#8C8C8C" />
+        <Ionicons name="remove" size={scale(20)} color="#8C8C8C" />
       </Pressable>
 
       <Text style={styles.quantityText}>{quantity}</Text>
 
       <Pressable style={styles.quantityButton} onPress={onIncrease}>
-        <Ionicons name="add" size={22} color={nectarTheme.green} />
+        <Ionicons name="add" size={scale(20)} color={nectarTheme.green} />
       </Pressable>
     </View>
   );
@@ -41,7 +42,7 @@ function CartRow({ item, onDecrease, onIncrease, onRemove }) {
           </View>
 
           <Pressable hitSlop={10} onPress={onRemove}>
-            <Ionicons name="close" size={24} color="#8C8C8C" />
+            <Ionicons name="close" size={scale(22)} color="#8C8C8C" />
           </Pressable>
         </View>
 
@@ -105,35 +106,35 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   titleWrap: {
-    paddingTop: 8,
-    paddingBottom: 16,
+    paddingTop: scale(8),
+    paddingBottom: scale(14),
     borderBottomWidth: 1,
     borderBottomColor: '#EDEDED',
   },
   title: {
-    fontSize: 28,
-    lineHeight: 34,
+    fontSize: scale(24),
+    lineHeight: scale(30),
     fontWeight: '700',
     color: nectarTheme.text,
     textAlign: 'center',
   },
   scrollContent: {
-    paddingHorizontal: 24,
-    paddingBottom: 170,
+    paddingHorizontal: scale(24),
+    paddingBottom: scale(156),
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 22,
+    paddingVertical: scale(20),
   },
   divider: {
     height: 1,
     backgroundColor: '#EDEDED',
   },
   productImage: {
-    width: 92,
-    height: 92,
-    marginRight: 18,
+    width: scale(78),
+    height: scale(78),
+    marginRight: scale(16),
   },
   meta: {
     flex: 1,
@@ -142,19 +143,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
-    marginBottom: 18,
+    marginBottom: scale(16),
   },
   name: {
-    fontSize: 24,
-    lineHeight: 30,
+    fontSize: scale(21),
+    lineHeight: scale(26),
     fontWeight: '700',
     color: nectarTheme.text,
-    maxWidth: 210,
+    maxWidth: scale(190),
   },
   subtitle: {
-    marginTop: 6,
-    fontSize: 18,
-    lineHeight: 24,
+    marginTop: scale(4),
+    fontSize: scale(16),
+    lineHeight: scale(22),
     color: '#7B7B82',
   },
   foot: {
@@ -167,62 +168,62 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   quantityButton: {
-    width: 52,
-    height: 52,
-    borderRadius: 18,
+    width: scale(46),
+    height: scale(46),
+    borderRadius: scale(16),
     borderWidth: 1,
     borderColor: '#E2E2E2',
     alignItems: 'center',
     justifyContent: 'center',
   },
   quantityText: {
-    marginHorizontal: 20,
-    minWidth: 24,
-    fontSize: 26,
-    lineHeight: 30,
+    marginHorizontal: scale(16),
+    minWidth: scale(22),
+    fontSize: scale(22),
+    lineHeight: scale(26),
     fontWeight: '600',
     color: nectarTheme.text,
     textAlign: 'center',
   },
   price: {
-    fontSize: 26,
-    lineHeight: 30,
+    fontSize: scale(22),
+    lineHeight: scale(26),
     fontWeight: '700',
     color: nectarTheme.text,
   },
   footer: {
     position: 'absolute',
-    left: 24,
-    right: 24,
-    bottom: 104,
+    left: scale(24),
+    right: scale(24),
+    bottom: scale(88),
   },
   checkoutButton: {
-    height: 68,
-    borderRadius: 22,
+    height: scale(60),
+    borderRadius: scale(20),
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: nectarTheme.green,
   },
   checkoutLabel: {
-    fontSize: 20,
-    lineHeight: 26,
+    fontSize: scale(18),
+    lineHeight: scale(24),
     fontWeight: '700',
     color: '#FFFFFF',
   },
   checkoutTotalBadge: {
     position: 'absolute',
-    right: 14,
-    minWidth: 52,
-    paddingHorizontal: 10,
-    height: 28,
-    borderRadius: 14,
+    right: scale(14),
+    minWidth: scale(48),
+    paddingHorizontal: scale(8),
+    height: scale(24),
+    borderRadius: scale(12),
     backgroundColor: 'rgba(72, 158, 105, 0.94)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   checkoutTotalText: {
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: scale(11),
+    lineHeight: scale(14),
     fontWeight: '700',
     color: '#FFFFFF',
   },

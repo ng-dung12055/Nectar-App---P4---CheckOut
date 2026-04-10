@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import PhoneStatusBar from '../components/PhoneStatusBar';
 import { getImageSource, nectarTheme } from '../data/nectarData';
+import { scale } from '../utils/layout';
 
 function FavouriteRow({ item }) {
   return (
@@ -24,7 +25,7 @@ function FavouriteRow({ item }) {
 
       <View style={styles.trailing}>
         <Text style={styles.price}>${item.price.toFixed(2)}</Text>
-        <Ionicons name="chevron-forward" size={24} color={nectarTheme.text} />
+        <Ionicons name="chevron-forward" size={scale(22)} color={nectarTheme.text} />
       </View>
     </View>
   );
@@ -66,49 +67,49 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   titleWrap: {
-    paddingTop: 8,
-    paddingBottom: 16,
+    paddingTop: scale(8),
+    paddingBottom: scale(14),
     borderBottomWidth: 1,
     borderBottomColor: '#EDEDED',
   },
   title: {
-    fontSize: 28,
-    lineHeight: 34,
+    fontSize: scale(24),
+    lineHeight: scale(30),
     fontWeight: '700',
     color: nectarTheme.text,
     textAlign: 'center',
   },
   scrollContent: {
-    paddingHorizontal: 24,
-    paddingBottom: 170,
+    paddingHorizontal: scale(24),
+    paddingBottom: scale(156),
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    minHeight: 114,
+    minHeight: scale(96),
   },
   divider: {
     height: 1,
     backgroundColor: '#EDEDED',
   },
   image: {
-    width: 64,
-    height: 82,
-    marginRight: 18,
+    width: scale(54),
+    height: scale(72),
+    marginRight: scale(16),
   },
   meta: {
     flex: 1,
   },
   name: {
-    fontSize: 24,
-    lineHeight: 30,
+    fontSize: scale(21),
+    lineHeight: scale(26),
     fontWeight: '700',
     color: nectarTheme.text,
   },
   subtitle: {
-    marginTop: 6,
-    fontSize: 18,
-    lineHeight: 24,
+    marginTop: scale(4),
+    fontSize: scale(16),
+    lineHeight: scale(22),
     color: '#7B7B82',
   },
   trailing: {
@@ -116,28 +117,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   price: {
-    marginRight: 8,
-    fontSize: 24,
-    lineHeight: 30,
+    marginRight: scale(8),
+    fontSize: scale(21),
+    lineHeight: scale(26),
     fontWeight: '700',
     color: nectarTheme.text,
   },
   footer: {
     position: 'absolute',
-    left: 24,
-    right: 24,
-    bottom: 104,
+    left: scale(24),
+    right: scale(24),
+    bottom: scale(88),
   },
   addButton: {
-    height: 68,
-    borderRadius: 22,
+    height: scale(60),
+    borderRadius: scale(20),
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: nectarTheme.green,
   },
   addButtonLabel: {
-    fontSize: 20,
-    lineHeight: 26,
+    fontSize: scale(18),
+    lineHeight: scale(24),
     fontWeight: '700',
     color: '#FFFFFF',
   },

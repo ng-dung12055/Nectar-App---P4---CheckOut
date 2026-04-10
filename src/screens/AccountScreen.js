@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import PhoneStatusBar from '../components/PhoneStatusBar';
 import { getGraphicSource, nectarTheme } from '../data/nectarData';
+import { scale } from '../utils/layout';
 
 const ACCOUNT_ITEMS = [
   { icon: 'bag-handle-outline', label: 'Orders' },
@@ -28,11 +29,11 @@ function AccountRow({ icon, label, showDivider = true }) {
     <View style={styles.rowWrap}>
       <View style={styles.row}>
         <View style={styles.rowLeading}>
-          <Ionicons name={icon} size={30} color={nectarTheme.text} />
+          <Ionicons name={icon} size={scale(26)} color={nectarTheme.text} />
           <Text style={styles.rowLabel}>{label}</Text>
         </View>
 
-        <Ionicons name="chevron-forward" size={28} color={nectarTheme.text} />
+        <Ionicons name="chevron-forward" size={scale(24)} color={nectarTheme.text} />
       </View>
 
       {showDivider ? <View style={styles.rowDivider} /> : null}
@@ -55,7 +56,7 @@ export default function AccountScreen({ profileName, profileEmail }) {
           <View style={styles.profileMeta}>
             <View style={styles.nameRow}>
               <Text style={styles.name}>{profileName}</Text>
-              <Ionicons name="pencil" size={20} color={nectarTheme.green} />
+              <Ionicons name="pencil" size={scale(18)} color={nectarTheme.green} />
             </View>
             <Text style={styles.email}>{profileEmail}</Text>
           </View>
@@ -73,7 +74,7 @@ export default function AccountScreen({ profileName, profileEmail }) {
         ))}
 
         <Pressable style={styles.logoutButton}>
-          <Ionicons name="log-out-outline" size={34} color={nectarTheme.green} />
+          <Ionicons name="log-out-outline" size={scale(28)} color={nectarTheme.green} />
           <Text style={styles.logoutText}>Log Out</Text>
         </Pressable>
       </ScrollView>
@@ -87,22 +88,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   content: {
-    paddingBottom: 160,
+    paddingBottom: scale(120),
   },
   profileHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingTop: 26,
-    paddingBottom: 28,
+    paddingHorizontal: scale(24),
+    paddingTop: scale(18),
+    paddingBottom: scale(22),
   },
   avatar: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
+    width: scale(64),
+    height: scale(64),
+    borderRadius: scale(32),
   },
   profileMeta: {
-    marginLeft: 18,
+    marginLeft: scale(16),
     flex: 1,
   },
   nameRow: {
@@ -110,16 +111,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   name: {
-    fontSize: 32,
-    lineHeight: 38,
+    fontSize: scale(27),
+    lineHeight: scale(32),
     fontWeight: '700',
     color: nectarTheme.text,
-    marginRight: 12,
+    marginRight: scale(10),
   },
   email: {
-    marginTop: 6,
-    fontSize: 22,
-    lineHeight: 28,
+    marginTop: scale(4),
+    fontSize: scale(17),
+    lineHeight: scale(22),
     color: '#8A8A8F',
   },
   sectionDivider: {
@@ -127,10 +128,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#E9E9E9',
   },
   rowWrap: {
-    paddingHorizontal: 24,
+    paddingHorizontal: scale(24),
   },
   row: {
-    minHeight: 92,
+    minHeight: scale(76),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -140,9 +141,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   rowLabel: {
-    marginLeft: 26,
-    fontSize: 28,
-    lineHeight: 34,
+    marginLeft: scale(18),
+    fontSize: scale(23),
+    lineHeight: scale(28),
     fontWeight: '600',
     color: nectarTheme.text,
   },
@@ -151,23 +152,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#EAEAEA',
   },
   logoutButton: {
-    marginTop: 24,
-    marginHorizontal: 24,
-    height: 76,
-    borderRadius: 24,
+    marginTop: scale(18),
+    marginHorizontal: scale(24),
+    height: scale(66),
+    borderRadius: scale(22),
     backgroundColor: '#F4F4F4',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: scale(24),
     justifyContent: 'center',
   },
   logoutText: {
     flex: 1,
     textAlign: 'center',
-    fontSize: 28,
-    lineHeight: 34,
+    fontSize: scale(22),
+    lineHeight: scale(28),
     fontWeight: '600',
     color: nectarTheme.green,
-    marginRight: 30,
+    marginRight: scale(22),
   },
 });
