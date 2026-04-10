@@ -1,8 +1,7 @@
 # Nectar App P4 - CheckOut
 
-Ho va ten: Nguyen Hoang Dung  
+Họ và tên: Nguyễn Hoàng Dũng 
 MSSV: 23810310338  
-Git repo: https://github.com/ng-dung12055/Nectar-App---P4---CheckOut.git
 
 ## Screens da hoan thanh
 
